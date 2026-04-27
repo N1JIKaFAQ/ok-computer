@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OK COMPUTER</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@700;800&family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@400;700&family=Noto+Serif+JP:wght@400;700&family=Noto+Sans+JP:wght@300;400;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<button id="mobile-menu-btn">☰</button>
+<div id="sidebar-backdrop"></div>
+
+<div id="app">
+  <!-- Sidebar -->
+  <aside id="sidebar">
+    <div id="sidebar-logo">
+      <span class="logo-x">×</span>
+      <span class="logo-text">OK COMPUTER</span>
+    </div>
+
+    <nav id="sidebar-nav">
+      <button class="sidebar-nav-btn active" data-view="home">
+        <span class="nav-icon">🏠</span>
+        <span class="nav-label">首页</span>
+      </button>
+      <button class="sidebar-nav-btn" data-view="lesson">
+        <span class="nav-icon">📖</span>
+        <span class="nav-label">课程</span>
+      </button>
+      <button class="sidebar-nav-btn" data-view="fretboard">
+        <span class="nav-icon">🎸</span>
+        <span class="nav-label">指板</span>
+      </button>
+      <button class="sidebar-nav-btn" data-view="chords">
+        <span class="nav-icon">🎵</span>
+        <span class="nav-label">和弦库</span>
+      </button>
+      <button class="sidebar-nav-btn" data-view="riffs">
+        <span class="nav-icon">🎼</span>
+        <span class="nav-label">Riff库</span>
+      </button>
+      <button class="sidebar-nav-btn" data-view="progressions">
+        <span class="nav-icon">🔀</span>
+        <span class="nav-label">进行</span>
+      </button>
+      <button class="sidebar-nav-btn" data-view="stats">
+        <span class="nav-icon">📈</span>
+        <span class="nav-label">统计</span>
+      </button>
+    </nav>
+
+    <div id="sidebar-playlist">
+      <div class="playlist-label">播放列表</div>
+      <div id="playlist-items"><!-- populated by player --></div>
+    </div>
+
+    <div id="sidebar-footer">
+      <span id="streak-display">🔥 <span id="streak-count">0</span> 天</span>
+    </div>
+  </aside>
+
+  <!-- Main Area -->
+  <div id="main-wrapper">
+    <main id="main-content">
+      <!-- Views rendered here -->
+    </main>
+
+    <!-- Bottom Player Bar -->
+    <div id="player-bar">
+      <div id="player-bar-left">
+        <div id="player-bar-cover"></div>
+        <div id="player-bar-info">
+          <span id="player-bar-title">未在播放</span>
+          <span id="player-bar-artist">选择一首歌开始</span>
+        </div>
+      </div>
+      <div id="player-bar-center">
+        <button class="player-ctrl-btn" id="btn-prev" title="上一首">⏮</button>
+        <button class="player-ctrl-btn player-ctrl-main" id="btn-play" title="播放/暂停">▶</button>
+        <button class="player-ctrl-btn" id="btn-next" title="下一首">⏭</button>
+      </div>
+      <div id="player-bar-right">
+        <button class="player-ctrl-btn" id="btn-focus" title="专注听歌">🎧</button>
+        <div id="player-bar-progress">
+          <span id="player-bar-time">0:00</span>
+          <div id="player-bar-track">
+            <div id="player-bar-fill"></div>
+          </div>
+          <span id="player-bar-duration">0:00</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Focus Mode Overlay -->
+  <div id="focus-overlay" class="hidden">
+    <div id="focus-bg"></div>
+    <div id="focus-cover-shadow"></div>
+    <button id="focus-exit" title="退出专注模式">✕</button>
+    <div id="focus-lyrics-container">
+      <div id="focus-lyrics"></div>
+    </div>
+    <div id="focus-controls">
+      <button class="focus-ctrl-btn" id="focus-btn-prev">⏮</button>
+      <button class="focus-ctrl-btn focus-ctrl-main" id="focus-btn-play">▶</button>
+      <button class="focus-ctrl-btn" id="focus-btn-next">⏭</button>
+      <div id="focus-progress">
+        <span id="focus-time">0:00</span>
+        <div id="focus-track"><div id="focus-fill"></div></div>
+        <span id="focus-duration">0:00</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- AI Chat -->
+<div id="ai-chat-container"></div>
+
+<!-- Core -->
+<script src="js/core/storage.js"></script>
+<script src="js/core/music-theory.js"></script>
+<script src="js/core/fretboard.js"></script>
+
+<!-- Data -->
+<script src="js/data/lessons.js"></script>
+<script src="js/data/lessons-ext.js"></script>
+<script src="js/data/quizbank.js"></script>
+<script src="js/data/chords.js"></script>
+<script src="js/data/riffs.js"></script>
+<script src="js/data/progressions.js"></script>
+
+<!-- Player (Phase 2+) -->
+<script src="js/player/playlist-data.js"></script>
+<script src="js/player/player-core.js"></script>
+<script src="js/player/player-album-art.js"></script>
+<script src="js/player/player-lyrics.js"></script>
+<script src="js/player/player-ui.js"></script>
+<script src="js/player/player-home.js"></script>
+<script src="js/player/player-focus.js"></script>
+<script src="js/player/player-unlock.js"></script>
+
+<!-- Decorations -->
+<script src="js/ok-computer/ok-decorations.js"></script>
+
+<!-- Views -->
+<script src="js/views/dashboard.js"></script>
+<script src="js/views/lesson.js"></script>
+<script src="js/views/fretboard.js"></script>
+<script src="js/views/stats.js"></script>
+<script src="js/views/chords.js"></script>
+<script src="js/views/riffs.js"></script>
+<script src="js/views/progressions.js"></script>
+
+<!-- AI Chat -->
+<script src="js/views/ai-chat.js"></script>
+
+<!-- App -->
+<script src="js/app.js"></script>
+</body>
+</html>
