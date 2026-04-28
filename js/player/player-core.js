@@ -49,6 +49,17 @@ const MusicPlayer = {
 
     // Wire up player bar buttons
     this.bindPlayerBar();
+
+    // Wire up music import
+    this.bindImportMusic();
+  },
+
+  /* Add a track dynamically (from import) */
+  addTrack(trackMeta) {
+    this.playlist.push(trackMeta);
+    this.renderPlaylist();
+    // Auto-play the newly added track
+    this.play(this.playlist.length - 1);
   },
 
   load(index) {
@@ -218,6 +229,49 @@ const MusicPlayer = {
 
     this.on('pause', () => {
       if (btnPlay) btnPlay.textContent = '▶';
+    });
+  },
+
+  /* Music import — file input → decrypt → add to playlist */
+  bindImportMusic() {
+    const importBtn = document.getElementById('import-music-btn');
+    const fileInput = document.getElementById('music-file-input');
+    if (!importBtn || !fileInput) return;
+
+    importBtn.addEventListener('click', () => fileInput.click());
+
+    fileInput.addEventListener('change', async () => {
+      const files = Array.from(fileInput.files);
+      for (const file of files) {
+        const fileName = file.name;
+        const needsUnlock = typeof UnlockMusic !== 'undefined' && UnlockMusic.needsUnlock(fileName);
+
+        let blobUrl;
+        if (needsUnlock) {
+          const decrypted = await UnlockMusic.decrypt(file, fileName);
+          if (!decrypted) {
+            alert(`无法解密: ${fileName}`);
+            continue;
+          }
+          blobUrl = decrypted;
+        } else {
+          blobUrl = URL.createObjectURL(file);
+        }
+
+        // Strip extension for title
+        const title = fileName.replace(/\.[^.]+$/, '');
+        this.addTrack({
+          id: 'import-' + Date.now(),
+          title: title,
+          artist: needsUnlock ? '解密导入' : '本地导入',
+          album: '',
+          file: blobUrl,
+          duration: 0,
+          coverFile: null
+        });
+      }
+      // Reset input so same file can be re-imported
+      fileInput.value = '';
     });
   }
 };

@@ -107,7 +107,7 @@ const OKDecorations = {
         transform: rotate(${pos.rotate}deg);
         opacity: 0.04;
         pointer-events: none;
-        z-index: 0;
+        z-index: -1;
         border-radius: 12px;
         filter: grayscale(0.5);
         animation: fadeIn 1.5s ease-out ${i * 0.3}s both;

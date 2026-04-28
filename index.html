@@ -56,6 +56,7 @@
     <div id="sidebar-playlist">
       <div class="playlist-label">播放列表</div>
       <div id="playlist-items"><!-- populated by player --></div>
+      <button id="import-music-btn" title="导入音乐（支持加密格式）">+ 导入音乐</button>
     </div>
 
     <div id="sidebar-footer">
@@ -116,6 +117,9 @@
     </div>
   </div>
 </div>
+
+<!-- Hidden file input for music import -->
+<input type="file" id="music-file-input" accept=".mp3,.flac,.ogg,.wav,.ncm,.qmc0,.qmc3,.qmcflac,.qmcogg,.mflac,.mgg,.kgm,.kgma,.kwm,.xm,.tm" style="display:none" multiple>
 
 <!-- AI Chat -->
 <div id="ai-chat-container"></div>

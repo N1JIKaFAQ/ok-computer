@@ -38,6 +38,10 @@ const Lyrics = {
 
   /* Load lyrics from pre-fetched JSON in music/lyrics/ */
   async load(trackId) {
+    // Always clear old lyrics first so stale data never survives a load failure
+    this.lines = [];
+    this.rawLRC = '';
+
     // Try local pre-fetched lyrics first
     try {
       const resp = await fetch(`music/lyrics/${trackId}.json`);
@@ -89,6 +93,10 @@ const Lyrics = {
   /* Start rAF sync loop */
   startSync(renderFn) {
     this.stopSync();
+    if (!this.lines.length) {
+      renderFn(-1); // signal "no lyrics"
+      return;
+    }
     const loop = () => {
       const idx = this.currentIndex(MusicPlayer.currentTime);
       renderFn(idx);

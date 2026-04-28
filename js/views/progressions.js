@@ -90,7 +90,7 @@ const ProgressionView = {
             <div class="progression-chord-item">
               <div class="roman-numeral">${chord.roman}</div>
               <div class="chord-label">${chord.name}</div>
-              <div class="mini-fretboard" id="prog-chord-${chord.name.replace('#','s')}"></div>
+              <div class="mini-fretboard" id="prog-chord-${chord.name.replace('#','s').replace('/','_')}"></div>
             </div>
           `).join('')}
         </div>
@@ -101,40 +101,56 @@ const ProgressionView = {
   _renderResult() {
     const container = document.getElementById('progression-result');
     if (!container) return;
+
+    if (!this.result) {
+      container.innerHTML = `
+        <div class="card" style="text-align:center;padding:40px;color:var(--accent2)">
+          <div style="font-size:48px;margin-bottom:16px">⚠️</div>
+          <div>生成失败</div>
+          <div style="font-size:13px;margin-top:8px">请检查调性和风格选择</div>
+        </div>`;
+      return;
+    }
+
     container.innerHTML = this.renderResult();
 
     // Render mini fretboards for each chord
-    if (!this.result) return;
     this.result.chords.forEach(chord => {
-      const fbContainer = document.getElementById(`prog-chord-${chord.name.replace('#','s')}`);
+      const safeId = chord.name.replace('#', 's').replace('/', '_');
+      const fbContainer = document.getElementById(`prog-chord-${safeId}`);
       if (!fbContainer) return;
 
-      if (chord.diagram) {
-        const d = chord.diagram;
-        const tuning = MusicTheory.STANDARD_TUNING;
-        const notes = [];
+      try {
+        if (chord.diagram) {
+          const d = chord.diagram;
+          const tuning = MusicTheory.STANDARD_TUNING;
+          const notes = [];
 
-        d.frets.forEach((fret, si) => {
-          if (fret >= 0) {
-            const midi = tuning[si] + fret;
-            notes.push(MusicTheory.midiToNote(midi));
-          }
-        });
+          d.frets.forEach((fret, si) => {
+            if (fret >= 0) {
+              const midi = tuning[si] + fret;
+              notes.push(MusicTheory.midiToNote(midi));
+            }
+          });
 
-        FretboardRenderer.render(fbContainer, {
-          fretCount: 5,
-          width: 180,
-          height: 110,
-          showNotes: true,
-          startFret: d.startFret || 1,
-          highlight: {
-            mode: 'scale',
-            notes: notes,
-            root: notes[0] || ''
-          }
-        });
-      } else {
-        fbContainer.innerHTML = '<div style="text-align:center;color:var(--text-muted);font-size:12px;padding:20px">暂无指型</div>';
+          FretboardRenderer.render(fbContainer, {
+            fretCount: 5,
+            width: 180,
+            height: 110,
+            showNotes: true,
+            startFret: d.startFret || 1,
+            highlight: {
+              mode: 'scale',
+              notes: notes,
+              root: notes[0] || ''
+            }
+          });
+        } else {
+          fbContainer.innerHTML = '<div style="text-align:center;color:var(--text-muted);font-size:12px;padding:20px">暂无指型</div>';
+        }
+      } catch (e) {
+        console.warn('Fretboard render failed for', chord.name, e);
+        fbContainer.innerHTML = '<div style="text-align:center;color:var(--text-muted);font-size:12px;padding:20px">渲染失败</div>';
       }
     });
   }
