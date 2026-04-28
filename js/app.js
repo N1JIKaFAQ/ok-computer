@@ -66,8 +66,22 @@ const App = {
       case 'riffs':    RiffsView.render(container); break;
       case 'progressions': ProgressionView.render(container); break;
       case 'stats':    StatsView.render(container); break;
+      case 'unlock':
+        if (typeof UnlockView !== 'undefined') {
+          UnlockView.render(container);
+        }
+        break;
       default:
         location.hash = 'home';
+    }
+
+    // Toggle decorations — only show on homepage
+    if (typeof OKDecorations !== 'undefined') {
+      if (name === 'home') {
+        OKDecorations.show();
+      } else {
+        OKDecorations.hide();
+      }
     }
 
     // Update AI chat context

@@ -1,16 +1,30 @@
-/* OK Computer visual decorations — × watermarks, road lines, anime art */
+/* OK Computer visual decorations — × watermarks, road lines, anime art
+   Only visible on homepage. Toggle via OKDecorations.show() / hide(). */
 const OKDecorations = {
+  _elements: [],
+
   init() {
     this.addWatermarks();
     this.addRoadLines();
     this.addAnimeDecorations();
   },
 
+  /* Show all decorations (called when navigating to home) */
+  show() {
+    this._elements.forEach(el => {
+      el.style.display = '';
+    });
+  },
+
+  /* Hide all decorations (called when navigating away from home) */
+  hide() {
+    this._elements.forEach(el => {
+      el.style.display = 'none';
+    });
+  },
+
   /* Scatter large × watermarks across the background */
   addWatermarks() {
-    const mainContent = document.getElementById('main-content');
-    if (!mainContent) return;
-
     const positions = [
       { top: '5%', right: '5%', size: 100, rotate: -15 },
       { bottom: '8%', left: '3%', size: 80, rotate: 10 },
@@ -20,7 +34,7 @@ const OKDecorations = {
 
     positions.forEach((pos, i) => {
       const el = document.createElement('div');
-      el.className = 'x-watermark';
+      el.className = 'x-watermark ok-decor';
       el.textContent = '×';
       el.style.cssText = `
         top: ${pos.top || 'auto'};
@@ -32,43 +46,30 @@ const OKDecorations = {
         animation: fadeIn 1s ease-out ${i * 0.15}s both;
       `;
       document.body.appendChild(el);
+      this._elements.push(el);
     });
   },
 
-  /* Road line decorations — dashes like highway markings */
+  /* Road line decorations */
   addRoadLines() {
     const mainContent = document.getElementById('main-content');
     if (!mainContent) return;
 
-    // Top road line
     const top = document.createElement('div');
-    top.className = 'road-line';
-    top.style.cssText = `
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 1px;
-      opacity: 0.3;
-    `;
-
-    // Bottom road line
-    const bottom = document.createElement('div');
-    bottom.className = 'road-line';
-    bottom.style.cssText = `
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 2px;
-      opacity: 0.5;
-    `;
-
+    top.className = 'road-line ok-decor';
+    top.style.cssText = 'top:0;left:0;right:0;height:1px;opacity:0.3';
     mainContent.appendChild(top);
+    this._elements.push(top);
+
+    const bottom = document.createElement('div');
+    bottom.className = 'road-line ok-decor';
+    bottom.style.cssText = 'bottom:0;left:0;right:0;height:2px;opacity:0.5';
     mainContent.appendChild(bottom);
+    this._elements.push(bottom);
   },
 
-  /* Anime character decorations — scattered images with low opacity */
+  /* Anime character decorations */
   addAnimeDecorations() {
-    // Available images from 图片/ directory that may be anime art
     const candidates = [
       '图片/微信图片_20260427223745_323_2353.jpg',
       '图片/微信图片_20260427223746_325_2353.jpg',
@@ -79,14 +80,12 @@ const OKDecorations = {
       '图片/微信图片_20260427223756_331_2353.jpg'
     ];
 
-    // Pick 2-3 random positions for anime art
     const positions = [
       { bottom: '100px', right: '30px', width: 180, rotate: -8 },
       { top: '120px', right: '60px', width: 140, rotate: 5 },
       { bottom: '200px', left: '40px', width: 160, rotate: 12 }
     ];
 
-    // Use 2 images from the pool
     const selected = candidates.sort(() => Math.random() - 0.5).slice(0, 3);
 
     selected.forEach((src, i) => {
@@ -95,7 +94,7 @@ const OKDecorations = {
 
       const img = document.createElement('img');
       img.src = src;
-      img.className = 'anime-decor';
+      img.className = 'anime-decor ok-decor';
       img.style.cssText = `
         position: fixed;
         bottom: ${pos.bottom || 'auto'};
@@ -113,27 +112,14 @@ const OKDecorations = {
         animation: fadeIn 1.5s ease-out ${i * 0.3}s both;
       `;
 
-      img.onerror = () => {
-        // Silently remove broken images
-        img.remove();
-      };
-
+      img.onerror = () => img.remove();
       document.body.appendChild(img);
+      this._elements.push(img);
     });
-  },
-
-  /* Refresh decorations (call after route changes if needed) */
-  refresh() {
-    // Remove existing decorations
-    document.querySelectorAll('.x-watermark, .road-line, .anime-decor').forEach(el => el.remove());
-    // Re-add
-    this.addWatermarks();
-    this.addRoadLines();
-    this.addAnimeDecorations();
   }
 };
 
-// Auto-init decorations on load
+// Auto-init decorations on load (visible on home which is the default page)
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', () => OKDecorations.init());
 } else {
